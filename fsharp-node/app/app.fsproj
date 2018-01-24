@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>netcoreapp2.0</TargetFramework>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="../messages/messages.csproj">
+      <Name>messages.csproj</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Cluster.fs" />
+    <Compile Include="Supervision.fs" />
+    <Compile Include="MessageHelpers.fs" />
+    <Compile Include="HelloProtoActor.fs" />
+    <Compile Include="Worker.fs" />
+    <Compile Include="Master.fs" />
+    <Compile Include="Program.fs" />
+  </ItemGroup>
+  <Import Project="..\.paket\Paket.Restore.targets" />
+</Project>
