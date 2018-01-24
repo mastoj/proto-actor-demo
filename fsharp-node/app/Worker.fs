@@ -20,6 +20,7 @@ let handler workerId requestWork (context: Proto.IContext) message =
         requestWork (context.Self)
     | SystemMessage (SystemMessage.Started _) -> 
         requestWork (context.Self)
+    | x -> printfn "Unexpected message %A" x
 
 let createWorkerKind requestWork workerId =
     Actor.create2 (handler workerId requestWork) |> Actor.initProps
@@ -29,7 +30,7 @@ let createWorkerMonitor workerCount requestWork =
     let handler (context: Proto.IContext) message =
         match message |> MessageHelpers.mapMsg with
         | SystemMessage (SystemMessage.Started _) ->
-            [ 1 .. workerCount ] |> List.iter (fun i  -> i |> createWorkerKind requestWork |> context.Spawn |> ignore)
+            [ 1 .. workerCount ] |> List.iter (fun i  -> printfn "Starting worker %i" i; i |> createWorkerKind requestWork |> context.Spawn |> ignore)
         | _ -> ()
 
     Actor.create2 handler

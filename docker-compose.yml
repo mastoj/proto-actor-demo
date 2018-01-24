@@ -11,12 +11,12 @@ services:
     build: ./fsharp-node/app
     depends_on:
       - master
-    command: "w 1"
+    command: "w 2"
   go-worker:
     build: ./go-node-out
     depends_on:
       - master
-    command: "w 1"
+    command: "w 2"
   consul:
     image: "consul:latest"
     container_name: "consul"

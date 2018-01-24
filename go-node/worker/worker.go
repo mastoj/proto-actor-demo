@@ -16,12 +16,10 @@ import (
 )
 
 type workerActor struct {
-	workerID  int
-	masterPid *actor.PID
+	workerID int
 }
 type workerActorMonitor struct {
 	workerCount int
-	masterPid   *actor.PID
 }
 
 func startCluster(hostName string) {
@@ -41,7 +39,8 @@ func getMasterPid() *actor.PID {
 	return masterPid
 }
 
-func requestWork(masterPid *actor.PID, workerPid *actor.PID) {
+func requestWork(workerPid *actor.PID) {
+	masterPid := getMasterPid()
 	message := messages.RequestWork{}
 	messagePid := messages.PID{}
 	messagePid.Address = workerPid.Address
@@ -62,10 +61,10 @@ func (worker *workerActor) Receive(context actor.Context) {
 		message.Result = float32(result)
 		sinkPid := actor.PID{Address: msg.Pid.Address, Id: msg.Pid.Id}
 		sinkPid.Tell(&message)
-		requestWork(worker.masterPid, context.Self())
+		requestWork(context.Self())
 	case *actor.Started:
-		fmt.Printf("GoWorker %d started, asking for work from master: %v", worker.workerID, worker.masterPid)
-		requestWork(worker.masterPid, context.Self())
+		fmt.Printf("GoWorker %d started, asking for work from master", worker.workerID)
+		requestWork(context.Self())
 		fmt.Printf("GoWorker %d Asked for my first piece of work", worker.workerID)
 	}
 }
@@ -74,14 +73,14 @@ func (monitor *workerActorMonitor) Receive(context actor.Context) {
 	switch context.Message().(type) {
 	case *actor.Started:
 		for i := 0; i < monitor.workerCount; i++ {
-			childProps := actor.FromProducer(func() actor.Actor { return &workerActor{workerID: i, masterPid: monitor.masterPid} })
+			childProps := actor.FromProducer(func() actor.Actor { return &workerActor{workerID: i} })
 			_ = context.Spawn(childProps)
 		}
 	}
 }
 
-func startWorkerMonitor(masterPid *actor.PID, workerCount int) {
-	monitorProps := actor.FromProducer(func() actor.Actor { return &workerActorMonitor{workerCount: workerCount, masterPid: masterPid} })
+func startWorkerMonitor(workerCount int) {
+	monitorProps := actor.FromProducer(func() actor.Actor { return &workerActorMonitor{workerCount: workerCount} })
 	_ = actor.Spawn(monitorProps)
 }
 
@@ -91,7 +90,6 @@ func Run(workerCount int) {
 	hostName, _ := os.Hostname()
 
 	startCluster(hostName)
-	masterPid := getMasterPid()
-	fmt.Printf("Will start worker monitor with args: %v, %v, %v\n", hostName, workerCount, *masterPid)
-	startWorkerMonitor(masterPid, workerCount)
+	fmt.Printf("Will start worker monitor with args: %v, %v\n", hostName, workerCount)
+	startWorkerMonitor(workerCount)
 }
