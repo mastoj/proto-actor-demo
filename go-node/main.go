@@ -4,9 +4,9 @@ import (
 	"os"
 	"strconv"
 
-	"github.com/unacast/proto-actor-demo/go-node/hello"
-	"github.com/unacast/proto-actor-demo/go-node/supervision"
-	"github.com/unacast/proto-actor-demo/go-node/worker"
+	"github.com/mastoj/proto-actor-demo/go-node/hello"
+	"github.com/mastoj/proto-actor-demo/go-node/supervision"
+	"github.com/mastoj/proto-actor-demo/go-node/worker"
 )
 
 func main() {

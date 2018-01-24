@@ -12,7 +12,7 @@ import (
 	"github.com/AsynkronIT/protoactor-go/cluster/consul"
 	"github.com/AsynkronIT/protoactor-go/remote"
 	"github.com/hashicorp/consul/api"
-	"github.com/unacast/proto-actor-demo/go-node/messages"
+	"github.com/mastoj/proto-actor-demo/go-node/messages"
 )
 
 type workerActor struct {
@@ -27,7 +27,9 @@ func startCluster(hostName string) {
 	if err != nil {
 		log.Fatal(err)
 	}
-	cluster.Start("FiresideChatCluster", hostName+":12000", cp)
+	address := hostName + ":12001"
+	fmt.Printf("Using address: %v\n", address)
+	cluster.Start("FiresideChatCluster", address, cp)
 }
 
 func getMasterPid() *actor.PID {
@@ -86,10 +88,12 @@ func startWorkerMonitor(workerCount int) {
 
 func Run(workerCount int) {
 	fmt.Printf("Starting go worker: %d\n", workerCount)
+	fmt.Println("===> HELLO <===")
 	time.Sleep(3 * time.Second)
 	hostName, _ := os.Hostname()
 
 	startCluster(hostName)
+
 	fmt.Printf("Will start worker monitor with args: %v, %v\n", hostName, workerCount)
 	startWorkerMonitor(workerCount)
 }

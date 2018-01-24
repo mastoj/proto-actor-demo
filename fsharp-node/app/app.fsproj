@@ -8,6 +8,7 @@
     <ProjectReference Include="../messages/messages.csproj">
       <Name>messages.csproj</Name>
     </ProjectReference>
+    <!-- <ProjectReference Include="/Users/tomasjansson/git/mastoj/protoactor-fsharp/src/Proto.Actor.FSharp/Proto.Actor.FSharp.fsproj"><Name>Proto.Actor.FSharp.fsproj</Name></ProjectReference> -->
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Cluster.fs" />

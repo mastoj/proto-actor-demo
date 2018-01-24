@@ -51,7 +51,6 @@ let handler (context: Proto.IContext) message state =
         match state.RemainingWork with
         | [] -> state
         | x::rest ->
-            printfn "%A request some work" (m.Pid)
             let sinkPid = state.SinkPid |> Option.get
             let protoPid = m.Pid |> MessageHelpers.toProtoPid
             newSubmitWork sinkPid x >! protoPid
